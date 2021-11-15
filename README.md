@@ -13,7 +13,13 @@ Note that once you get back the forecast URL (for the sample it's https://api.we
 
 ---
 
-11/15/21
+Aug 10, 2021
+
+index.php is my first test file, it has hard-coded lat/lon values.
+
+---
+
+Nov 15, 2021
 
 Added forecast-api.php, which is an API version of the code in index.php. You may use post or get to provide the lat/lon.
 
