@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 Sample code for fetching forecast weather data from the National Weather Service using their API.
 It parses the results as JSON and outputs some forecast information.
 
@@ -8,7 +8,7 @@ https://weather-gov.github.io/api/general-faqs
 */
 ?>
 
-<html>
+<html lang="en">
 <head>
 <title>Sample weather forecast fetch</title>
 </head>
@@ -28,7 +28,7 @@ function curlFetch($requestURL)
     // See: https://www.php.net/manual/en/function.curl-setopt.php
 
     curl_setopt( $ch, CURLOPT_URL, $requestURL);
-    curl_setopt( $ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);  // Browser being used
+    curl_setopt( $ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);        // Browser being used
     curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true);                    // Follow any "Location: " header that the server sends 
     curl_setopt( $ch, CURLOPT_MAXREDIRS, 3);                            // Max redirects to follow
     curl_setopt( $ch, CURLOPT_ENCODING, "");                            // Accept encoded responses
@@ -58,7 +58,7 @@ print("Response code: " . $response['http_code']);
 
 if ($response['http_code'] != "200")
 {
-    print("<p>API call failed: $response</p>");
+    print("<p>API call failed: " . $response['http_code'] . "</p>");
 } else {
     print("<p>Response text:</p><ul>$dataRaw</ul>");
 
@@ -80,7 +80,7 @@ if ($response['http_code'] != "200")
 
     if ($response['http_code'] != "200")
     {
-        print("<p>API call failed: $response</p>");
+        print("<p>API call failed:  " . $response['http_code'] . "</p>");
     } else {
         print("<p>Response text:</p><ul>$dataRaw</ul>");
 
