@@ -25,6 +25,8 @@ Added forecast-api.php, which is an API version of the code in index.php. You ma
 
 Also added a tester page forecast-api-test.php. Be sure to adjust the $remoteApiPath variable in this file to provide the API path.
 
+---
+
 Nov 24, 2021
 
 Added forecast-api-fetch.html, which is a test page for forecast-api.php that uses Javascript for the API call.
