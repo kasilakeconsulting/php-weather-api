@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Javascript test page for forecast-api.php</title>
+
+    <style>
+        /* Format form labels. */
+        label {
+            display: inline-block;
+            float: left;
+            clear: left;
+            width: 100px;
+            padding: 0px 10px;
+            text-align: right;
+        }
+
+        input {
+            display: inline-block;
+            float: left;
+        }
+
+        .submit {
+            width: 100px;
+            margin-left: 120px;
+        }
+
+        table, th, td {
+            border: 1px solid;
+            border-spacing: 0;
+        }
+
+        table th, table td {
+            padding: 5px;
+        }
+    </style>
+
+    <script>
+        // Be sure to set your forecast-api.php path here.
+        let remoteApiPath = "https://" + window.location.host + "/phptest/php-weather-api/forecast-api.php";
+
+        let cities = [
+            {
+                "id": "barrow",
+                "city": "Barrow, AK",
+                "lat": "71.2905",
+                "lon": "-156.7886"
+            },
+            {
+                "id": "houston",
+                "city": "Houston, TX",
+                "lat": "29.7499",
+                "lon": "-95.3584"
+            },
+            {
+                "id": "miami",
+                "city": "Miami, FL",
+                "lat": "25.7616",
+                "lon": "-80.1917"
+            },
+            {
+                "id": "neworleans",
+                "city": "New Orleans, LA",
+                "lat": "29.9546",
+                "lon": "-90.0750"
+            },
+            {
+                "id": "dc",
+                "city": "Washington, DC",
+                "lat": "38.8894",
+                "lon": "-77.0352"
+            }
+        ];
+
+        function latlonSubmit() {
+            let lat = document.getElementById("lat");
+            let lon = document.getElementById("lon");
+
+            let latValue = lat.value.trim();
+            let lonValue = lon.value.trim();
+
+            if (latValue.length == 0) {
+                lat.focus();
+                alert('Please provide a value for lattitude');
+            } else if (lonValue.length == 0) {
+                lon.focus();
+                alert('Please provide a value for longitude');
+            } else {
+                fetch_forecast(latValue, lonValue);
+            }
+        }
+
+        function citySubmit() {
+            let dropdown = document.getElementById("city");
+            let id = dropdown.options[dropdown.selectedIndex].value
+
+            for (let i = 0; i < cities.length; i++) {
+                if (cities[i].id == id) {
+                    latValue = cities[i].lat;
+                    lonValue = cities[i].lon;
+                    break;
+                }
+            }
+
+            fetch_forecast(latValue, lonValue);
+        }
+
+        // "async" allows the use of "await" in the fetch() call.
+        async function fetch_forecast(latValue, lonValue) {
+            let results = document.getElementById("results");
+            results.innerHTML = "<p><hr>Submitting " + latValue + "," + lonValue + " ...</p>";
+
+            let url = remoteApiPath + "?lat=" + latValue + "&lon=" + lonValue;
+            console.log("url: " + url);
+
+            const response = await fetch(url);
+            console.log("fetch response: " + response);
+
+            if (response.ok) {
+                const forecastData = await response.json();
+                console.log("API response: " + forecastData.result);
+
+                if (forecastData.result !== 'ok') {
+                    results.innerHTML += "<p>The information could not be obtained: " + forecastData.message + "</p>";
+                } else {
+                    let forecasts = forecastData.forecasts;
+                    let forecastOutput = "";
+
+                    forecastOutput = "<p><table><tr><th align='center'>When</th><th align='center'>Forecast</th></tr>";
+
+                    for (let i = 0; i < forecasts.length; i++) {
+                        let forecast = forecasts[i];
+                        Object.keys(forecasts[i]).forEach(key => (forecastOutput += "<tr><td>" + key + "</td><td>"+ forecast[key] + "</td></tr>"));
+                    }
+
+                    forecastOutput += "</table></p>";
+                    results.innerHTML += forecastOutput;
+                }
+
+            } else {
+                results.innerHTML += "<p>API call failed with http code: " + response.status + "</p>";
+            }
+        }
+
+    </script>
+</head>
+<body>
+
+<p>Test page for forecast-api.php, using Javascript and Fetch</p>
+
+<p>Provide a US-based latitude/longitude, or select a city from the list.</p>
+<br>
+
+<form method="post">
+    <div>
+        <label>Latitude:</label>
+        <input type="text" name="lat" value="" size="20" id="lat">
+        <br>
+        <label>Longitude:</label>
+        <input type="text" name="lon" value="" size="20" id="lon">
+    </div>
+    <br><br>
+    <input type="button" name="submit" value="Submit" onclick="latlonSubmit()" class="submit">
+</form>
+<br><br><br>
+
+<form>
+    <div>
+        <label>City:</label>
+        <select name="city" id="city">
+        </select>
+    </div>
+    <br>
+    <input type="button" name="submit" value="Submit" onclick="citySubmit()" class="submit">
+</form>
+<br><br>
+
+<div id="results">
+    <p>Results will appear here.</p>
+</div>
+
+<script>
+    // Add the cities to the dropdown.
+
+    let dropdown = document.getElementById("city");
+
+    for (let i = 0; i < cities.length; i++) {
+        let option = document.createElement("OPTION");
+        option.text = cities[i].city;
+        option.value = cities[i].id;
+        dropdown.options.add(option);
+    }
+</script>
+
+</body>
+</html>

@@ -127,7 +127,6 @@ if ($processFlag == true) {
     print("<p><hr>Submitting $lat,$lon ...</p>");
 
     // Set up a curl resource handle;
-    print($_SERVER['']);
     $ch = curl_init($remoteApiPath);
 
     // Tell curl you want to send a POST request.
